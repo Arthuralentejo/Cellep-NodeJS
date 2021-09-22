@@ -12,7 +12,7 @@
             "askForPassword": true,
             "driver": "PostgreSQL",
             "name": "heroku",
-            "connectString": "postgres://zbgytapkxvxcsx:5dec7cba393824256a23d8ced44f7db6d4b0ad30d382bf35254d4936ee2b4fcd@ec2-3-219-111-26.compute-1.amazonaws.com:5432/de867150eoetc5"
+            "connectString": "postgres://zrhooabzaltead:cf49300589c97e8cd1dcda1d05dd6622d2be5c8114f4a804b65295ee1761f894@ec2-34-227-120-94.compute-1.amazonaws.com:5432/d48ge1ift38nfi"
         }
     ]
 }

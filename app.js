@@ -8,20 +8,37 @@ app.set('view engine', 'ejs')
 app.set('views', './app/views')
     //configuracoes de arquivos estáticos
 app.use(express.static('./app/public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const noticias = require('./mockup.js')
+// const noticias = require('./mockup.js')
 
-app.get('/', (req, res) => {
-    res.render("home/index", { noticias: noticias.slice(0, 3), title: 'Home' })
+const dbConnection = require('./dbConnection')
+app.get('/', async(req, res) => {
+    //Consulta SQL
+    var result = await dbConnection.query('SELECT * FROM noticias order by id_noticia desc limit 3')
+    res.render("home/index", { noticias: result.rows, title: 'Home' })
 })
-app.get('/noticia', (req, res) => {
+app.get('/noticia', async(req, res) => {
     var id = req.query.id
-    res.render('noticias/noticia', { noticia: noticias[id], title: 'noticia' })
+    let result = await dbConnection.query('SELECT * FROM noticias where id_noticia = $1', [id])
+
+    res.render('noticias/noticia', { noticia: result.rows[0], title: 'noticia' })
 })
 
-app.get('/noticias', (req, res) => {
-    var id = req.query.id
-    res.render("noticias/noticias", { noticias: noticias, title: 'noticias' })
+app.get('/noticias', async(req, res) => {
+
+    var result = await dbConnection.query('SELECT * FROM noticias order by id_noticia desc')
+
+    res.render("noticias/noticias", { noticias: result.rows, title: 'noticias' })
+})
+
+app.post('/admin/salvar-noticia', async(req, res) => {
+    let { titulo, conteudo } = req.body
+    await dbConnection.query('INSERT INTO noticias (titulo, conteudo) VALUES($1,$2)', [titulo, conteudo], (err, result) => {
+        res.redirect('/noticias')
+    })
+
 })
 
 app.get('/admin', (req, res) => {
